@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsnd ./src/server.ts",
     "start": "node .",
-    "transpile": "npx tsc"
+    "transpile": "npx tsc",
+    "db:on": "npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all"
   },
   "keywords": [],
   "author": "",
