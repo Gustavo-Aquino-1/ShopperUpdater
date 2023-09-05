@@ -5,4 +5,6 @@ const productSchema = joi.object({
   new_price: joi.number().positive().required(),
 })
 
-export = { productSchema }
+const productsSchema = joi.array().items(productSchema).min(1)
+
+export = { productsSchema }
