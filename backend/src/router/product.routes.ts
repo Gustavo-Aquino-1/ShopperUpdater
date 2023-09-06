@@ -6,10 +6,12 @@ const control = new ProdutController()
 
 const productRouter = Router()
 
-productRouter.put(
-  '/update',
-  updateProductMiddleware,
-  (req, res, next) => control.updateOneProduct(req, res, next),
+productRouter.put('/update', updateProductMiddleware, (req, res, next) =>
+  control.update(req, res, next),
+)
+
+productRouter.put('/validate', updateProductMiddleware, (req, res, next) =>
+  control.validateUpdate(req, res, next),
 )
 
 export default productRouter
