@@ -100,11 +100,11 @@ function UpdateProduct() {
   return (
     <div className='h-full h-screen p-5'>
       <div className='flex justify-between'>
-        <h1 className='pb-2 text-2xl text-emerald-800 font-light'>
+        <h1 className='pb-2 text-3xl text-emerald-800 font-light'>
           Shopper - Atualização produtos
         </h1>
         <Link
-          className='pb-2 text-2xl mb-7 text-emerald-800 font-light mr-3'
+          className='pb-2 text-3xl mb-7 text-emerald-800 font-light mr-3'
           to='/tutorial'
         >
           Como Utilizar ?

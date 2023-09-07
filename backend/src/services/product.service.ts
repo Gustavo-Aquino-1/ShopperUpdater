@@ -18,7 +18,7 @@ export default class ProductService {
   private async findByPk(pk: bigint, errors: any) {
     const product = await this.modelProduct.findByPk(pk)
     if (!product) {
-      errors[String(pk)].push("Product don't exists")
+      errors[String(pk)].push('Produto inexistente')
       return null
     }
     return product
@@ -31,7 +31,9 @@ export default class ProductService {
     code: bigint,
   ) {
     if (newPrice < costPrice) {
-      errors[String(code)].push('Product has new price less than cost price')
+      errors[String(code)].push(
+        'Produto não pode ter um preço menor que seu preço de custo',
+      )
     }
   }
 
@@ -46,7 +48,7 @@ export default class ProductService {
     if (readjustment < 0) readjustment = -readjustment
     if (readjustment > tenPorcent) {
       errors[String(code)].push(
-        'Product has new price with readjustment greater than ten porcent of actual sale price',
+        'Produto não pode ter um novo preço com reajuste maior do que 10% do preço atual',
       )
     }
   }
@@ -65,7 +67,8 @@ export default class ProductService {
     )
     if (!components.length) {
       errors[String(code)].push(
-        "Your can't update a price of pack without update a price of at least one of your components",
+        `Não é permitido a atualização do preço do pacote, 
+        sem a atualização de pelo menos um de seus componentes`,
       )
       return
     }
@@ -74,17 +77,19 @@ export default class ProductService {
       const packC = packs.find(
         (e) => Number(e.productId) === Number(components[i].product_code),
       )
-      if(!packC) {
+      if (!packC) {
         console.log(code, components[i].product_code)
         continue
       }
-      const findProduct = await this.modelProduct.findByPk(components[i].product_code)
+      const findProduct = await this.modelProduct.findByPk(
+        components[i].product_code,
+      )
       priceUpdated -= findProduct!.salesPrice * Number(packC!.qty)
       priceUpdated += components[i].new_price * Number(packC!.qty)
     }
     priceUpdated = +priceUpdated.toFixed(2)
     if (priceUpdated != newPrice) {
-      errors[String(code)].push('New price of package inconsistent')
+      errors[String(code)].push('Novo preço do pacote é inconsistente')
     }
   }
 
@@ -100,8 +105,8 @@ export default class ProductService {
       )
       if (!packUpdating) {
         errors[String(code)].push(
-          `When update product price should update the packs
-           of this product -- missing update in package ${packId}`,
+          `Quando um produto é atualizado, todos os pacotes em que ele
+          é um componente devem ser atualizados - falta atualizar o pacote - ${packId}`,
         )
       }
     }
