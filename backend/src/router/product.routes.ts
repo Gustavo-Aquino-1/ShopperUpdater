@@ -10,7 +10,7 @@ productRouter.put('/update', updateProductMiddleware, (req, res, next) =>
   control.update(req, res, next),
 )
 
-productRouter.put('/validate', updateProductMiddleware, (req, res, next) =>
+productRouter.post('/validate', updateProductMiddleware, (req, res, next) =>
   control.validateUpdate(req, res, next),
 )
 

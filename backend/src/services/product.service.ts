@@ -72,11 +72,15 @@ export default class ProductService {
     let priceUpdated = product.salesPrice
     for (let i = 0; i < components.length; i++) {
       const packC = packs.find(
-        (e) => Number(e.productId) === Number(body[i].product_code),
+        (e) => Number(e.productId) === Number(components[i].product_code),
       )
-      const findProduct = await this.modelProduct.findByPk(body[i].product_code)
+      if(!packC) {
+        console.log(code, components[i].product_code)
+        continue
+      }
+      const findProduct = await this.modelProduct.findByPk(components[i].product_code)
       priceUpdated -= findProduct!.salesPrice * Number(packC!.qty)
-      priceUpdated += body[i].new_price * Number(packC!.qty)
+      priceUpdated += components[i].new_price * Number(packC!.qty)
     }
     priceUpdated = +priceUpdated.toFixed(2)
     if (priceUpdated != newPrice) {
@@ -107,6 +111,7 @@ export default class ProductService {
     const error = this.validateFields(body)
     if (error) return responseWithMessage(400, error)
     const errors: any = {}
+    const allProducts = []
     for (let i = 0; i < body.length; i++) {
       const code = body[i].product_code
       const newPrice = +body[i].new_price
@@ -115,6 +120,7 @@ export default class ProductService {
 
       const product = await this.findByPk(code, errors)
       if (!product) continue
+      allProducts.push(product)
 
       this.isLessThanCostPrice(newPrice, product.costPrice, errors, code)
       this.isInTheTenPorcentRange(newPrice, product.salesPrice, errors, code)
@@ -129,8 +135,8 @@ export default class ProductService {
       if (!errors[String(code)].length) delete errors[String(code)]
     }
 
-    if (Object.keys(errors).length) return response(400, errors)
-    return response(204, null)
+    if (Object.keys(errors).length) return response(400, [errors, allProducts])
+    return response(200, [null, allProducts])
   }
 
   async updateProduct(body: IUpdateProduct[]) {
