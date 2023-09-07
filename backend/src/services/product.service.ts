@@ -141,7 +141,7 @@ export default class ProductService {
 
   async updateProduct(body: IUpdateProduct[]) {
     const { status, message } = await this.validateUpdate(body)
-    if (status != 204) return response(status, message)
+    if (status != 200) return response(status, message)
 
     for (let i = 0; i < body.length; i++) {
       await this.modelProduct.update(

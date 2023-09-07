@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import papa from 'papaparse'
 import { AiFillCheckCircle } from 'react-icons/ai'
 import { BiSolidError } from 'react-icons/bi'
+import { Link } from 'react-router-dom'
 // import '../index.css'
 
 function UpdateProduct() {
@@ -11,7 +12,17 @@ function UpdateProduct() {
   const [products, setProducts] = useState([])
   const [isValidated, setIsValidated] = useState(false)
 
+  const clear = () => {
+    setFile([])
+    setErrors([])
+    setIsValidated(false)
+    setCanUpdate(false)
+  }
+
   const handleFile = (e) => {
+    setProducts([])
+    setErrors({})
+    setIsValidated(false)
     try {
       const file = e.target.files[0]
       papa.parse(file, {
@@ -23,11 +34,45 @@ function UpdateProduct() {
       })
     } catch (error) {
       setFile([])
+      setProducts([])
+      setCanUpdate(false)
     }
+  }
+
+  const update = async () => {
+    if (!file) return alert('Please, select csv file')
+
+    const response = await fetch('http://localhost:3001/validate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(file),
+    })
+
+    if (response.status === 200) {
+      const responseUpdate = await fetch('http://localhost:3001/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(file),
+      })
+      if (responseUpdate.status === 204) {
+        alert('Atualização realizada com sucesso!!')
+        clear()
+      } else {
+        alert(
+          'Houve algum erro durante a atualização, tente novamente mais tarde!',
+        )
+      }
+      return
+    }
+
+    alert('Erro na validação!!')
   }
 
   const validateUpdate = async () => {
     if (!file.length) return alert('Please, select csv file')
+    if (isValidated) return
 
     const response = await fetch('http://localhost:3001/validate', {
       method: 'POST',
@@ -53,15 +98,31 @@ function UpdateProduct() {
   }
 
   return (
-    <div className='h-full h-screen m-5'>
+    <div className='h-full h-screen p-5'>
+      <div className='flex justify-between'>
+        <h1 className='pb-2 text-2xl text-emerald-800 font-light'>
+          Shopper - Atualização produtos
+        </h1>
+        <Link
+          className='pb-2 text-2xl mb-7 text-emerald-800 font-light mr-3'
+          to='/tutorial'
+        >
+          Como Utilizar ?
+        </Link>
+      </div>
+
       <input type='file' accept='.csv' onChange={handleFile} />
-      {/* {JSON.stringify(file, null, 2)} */}
+
       <button className='btn_app bg-emerald-600' onClick={validateUpdate}>
         Validate
       </button>
 
-      <button disabled={!canUpdate} className='btn_app bg-blue-600'>
-        update
+      <button
+        onClick={update}
+        disabled={!canUpdate}
+        className='btn_app bg-blue-600'
+      >
+        Update
       </button>
 
       {isValidated && (
@@ -72,10 +133,10 @@ function UpdateProduct() {
               key={e.code}
             >
               <div className='flex flex-col gap-2' id='infos'>
-                <h1>Informações</h1>
+                <h1 className='text-lg font-bold'>Informações</h1>
                 <p>Codigo - {e.code}</p>
                 <p>Nome - {e.name}</p>
-                <p>Preço - {e.salesPrice}</p>
+                <p>Preço Atual - {e.salesPrice}</p>
                 <p>
                   Novo Preço -
                   {
