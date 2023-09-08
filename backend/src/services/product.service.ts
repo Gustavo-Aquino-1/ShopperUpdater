@@ -77,10 +77,8 @@ export default class ProductService {
       const packC = packs.find(
         (e) => Number(e.productId) === Number(components[i].product_code),
       )
-      if (!packC) {
-        console.log(code, components[i].product_code)
-        continue
-      }
+      if (!packC) continue
+      
       const findProduct = await this.modelProduct.findByPk(
         components[i].product_code,
       )
