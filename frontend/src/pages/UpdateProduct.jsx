@@ -82,8 +82,16 @@ function UpdateProduct() {
       body: JSON.stringify(file),
     })
 
-    const [findErrors, products] = await response.json()
+    const data = await response.json()
+    if (!data[1]) {
+      alert(
+        "Campos faltantes ou em formato incorreto no arquivo csv " +
+        "veja em 'Como utilizar' para mandar o arquivo corretamente"
+      )
+      return
+    }
 
+    const [findErrors, products] = data
     if (response.status === 200) {
       setProducts(products)
       setIsValidated(true)
@@ -98,7 +106,7 @@ function UpdateProduct() {
   }
 
   return (
-    <div className='h-full h-screen p-5'>
+    <div className='h-full h-screen p-5 flex flex-col center'>
       <div className='flex justify-between'>
         <h1 className='pb-2 text-3xl text-emerald-800 font-light'>
           Shopper - Atualização produtos
@@ -111,29 +119,36 @@ function UpdateProduct() {
         </Link>
       </div>
 
-      <input type='file' accept='.csv' onChange={handleFile} />
+      <div>
+        <input type='file' accept='.csv' onChange={handleFile} />
+      </div>
 
-      <button className='btn_app bg-emerald-600' onClick={validateUpdate}>
-        Validate
-      </button>
+      <div className='flex justify-center mb-20'>
+        <button className='btn_app bg-emerald-800' onClick={validateUpdate}>
+          Validate
+        </button>
 
-      <button
-        onClick={update}
-        disabled={!canUpdate}
-        className='btn_app bg-blue-600'
-      >
-        Update
-      </button>
+        <button
+          onClick={update}
+          disabled={!canUpdate}
+          className='btn_app bg-blue-950'
+        >
+          Update
+        </button>
+      </div>
 
       {isValidated && (
-        <div className='flex flex-col gap-5'>
+        <div className='flex flex-col gap-10 w-[80%] self-center pb-20'>
           {products?.map((e) => (
             <div
-              className='flex justify-between border-gray-500 border-solid border p-3'
+              className='flex border-gray-400 border-2 border rounded max-md:block'
               key={e.code}
             >
-              <div className='flex flex-col gap-2' id='infos'>
-                <h1 className='text-lg font-bold'>Informações</h1>
+              <div
+                className='flex text-lg flex-col gap-8 bg-emerald-600 w-[100%] text-white p-5'
+                id='infos'
+              >
+                <h1 className='text-2xl font-bold'>Informações</h1>
                 <p>Codigo - {e.code}</p>
                 <p>Nome - {e.name}</p>
                 <p>Preço Atual - {e.salesPrice}</p>
@@ -147,21 +162,23 @@ function UpdateProduct() {
                 </p>
               </div>
 
-              <div id='errors'>
+              <div className='bg-emerald-100 w-full p-5' id='errors'>
                 {errors[String(e.code)]?.length ? (
-                  <div className='flex flex-col justify-end text-lg'>
-                    <p className='flex items-center self-end'>
+                  <div className='flex flex-col justify-end'>
+                    <p className='flex items-center self-center text-2xl'>
                       Erro na validação {<BiSolidError color='orange' />}
                     </p>
-                    <p className='max-w-[300px] text-justify mt-5'>
+                    <ul className='max-w-[300px] text-justify mt-5 self-center text-lg'>
                       {errors[String(e.code)].map((e, i) => (
-                        <li key={i}>{e}</li>
+                        <li className='list-disc' key={i}>
+                          {e}
+                        </li>
                       ))}
-                    </p>
+                    </ul>
                   </div>
                 ) : (
-                  <div className='flex items-center justify-end text-lg'>
-                    Tudo certo {<AiFillCheckCircle color='green' />}{' '}
+                  <div className='flex items-center justify-center text-2xl'>
+                    Tudo certo {<AiFillCheckCircle color='green' />}
                   </div>
                 )}
               </div>
