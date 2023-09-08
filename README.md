@@ -2,11 +2,6 @@
 
 Sistema para atualização de produtos, de um modo simples e seguro!!
 
-Como Utilizar:
-
-// video vira aqui
-
-
 ## Subindo com docker-compose 🐳
 
 ⚠️ Certifique-se de que as portas que serao usadas pelo docker-compose estão livres, são elas: 3000, 3001, 3306.
@@ -27,6 +22,9 @@ Dentro do container execute:
 npm run db:on
 ```
 
+## Acessando aplicação
+
+Após realizar os passos acima, sua aplicação estará rodando [aqui](http://localhost:3000/).
 
 ## Tecnologias utilizadas 💻
 
@@ -36,8 +34,6 @@ npm run db:on
 
 **Outros**: Docker
 
-
 ## Desenvolvido por:
 
 [@GustavoAquino](https://www.github.com/Gustavo-Aquino-1)
-
