@@ -14,6 +14,7 @@ services:
     restart: always
     ports:
       - 3001:3001
+    container_name: shopper_updater_backend
 
   frontend:
     build: ./frontend
@@ -22,7 +23,8 @@ services:
     restart: always
     volumes:
       - ./frontend:/app-frontend
-  
+    container_name: shopper_updater_frontend
+
   db:
     image: mysql:8.0
     environment:
@@ -30,3 +32,4 @@ services:
     ports:
       - 3306:3306
     restart: always
+    container_name: shopper_updater_db
