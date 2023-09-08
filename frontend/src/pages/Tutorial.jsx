@@ -9,6 +9,16 @@ function Tutorial() {
         Shopper!!
       </h1>
 
+      <iframe
+        title='Tutorial Atualização de Produtos Shopper'
+        className='m-5'
+        width={1000}
+        height={700}
+        src='https://www.youtube.com/embed/LyuAqsp8MZc'
+        frameborder='0'
+        allowFullScreen
+      ></iframe>
+
       <Link className='text-blue-600 underline' to='/'>
         Atualizar Produtos
       </Link>
